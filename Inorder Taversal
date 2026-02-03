@@ -1,0 +1,114 @@
+C++ Code:
+Methode 1: Using recursive approach
+#include<bits/stdc++.h>
+using namespace std;
+struct TreeNode
+{
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int val)
+    {
+        data=val;
+        left=nullptr;
+        right=nullptr;
+    }
+};
+// Function to perform inorder traversal of tree and to store values in array
+void recursiveInorder(TreeNode* root,vector<int> &arr)
+{
+    // Base case
+    if(root==nullptr)
+    {
+        return;
+    }
+    // Recursively traverse left subtree 
+    recursiveInorder(root->left,arr);
+    // Push current tree node value into vector
+    arr.push_back(root->data);
+    // Recursively traverse right subtree 
+    recursiveInorder(root->right,arr);
+}
+// Function to initiate inorder traversal and to return resulting vector
+vector<int>inorder(TreeNode* root)
+{
+    // Create empty vector to store inorder tree traversal values
+    vector<int>arr;
+    // Call inorder traversal function
+    recursiveInorder(root,arr);
+    // Return resulting vector
+    return arr;
+}
+int main()
+{
+    TreeNode* root=new TreeNode(1);
+    root->left=new TreeNode(2);
+    root->right=new TreeNode(3);
+    root->left->left=new TreeNode(4);
+    root->left->right=new TreeNode(5);
+    vector<int>result=inorder(root);
+    for(auto val:result)
+    {
+        cout<<val<<" ";
+    }
+    cout<<endl;
+    return 0;
+}
+
+Method 2: Using iterative approach using stack
+#include<bits/stdc++.h>
+using namespace std;
+struct TreeNode
+{
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int val)
+    {
+        data=val;
+        left=nullptr;
+        right=nullptr;
+    }
+};
+// Function to perform inorder traversal of binary tree iteratively
+vector<int> inorder(TreeNode* root)
+{
+    stack<TreeNode*>st;
+    TreeNode* node=root;
+    vector<int>inorder;
+    while(true)
+    {
+        if(node!=NULL)
+        {
+            st.push(node);
+            node=node->left;
+        }
+        else
+        {
+            if(st.empty()) break;
+            node=st.top();
+            st.pop();
+            inorder.push_back(node->data);
+            node=node->right;
+        }
+    }
+    return inorder;
+}
+int main()
+{
+    TreeNode* root=new TreeNode(1);
+    root->left=new TreeNode(2);
+    root->right=new TreeNode(3);
+    root->left->left=new TreeNode(4);
+    root->left->right=new TreeNode(5);
+    vector<int>result=inorder(root);
+    for(int val:result)
+    {
+        cout<<val<<" ";
+    }
+    cout<<endl;
+    return 0;
+}
+
+output:
+4 2 5 1 3 
