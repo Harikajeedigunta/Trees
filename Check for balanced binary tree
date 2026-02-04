@@ -1,0 +1,102 @@
+C++ Code:
+Method 1:Brute Force
+#include<bits/stdc++.h>
+using namespace std;
+struct TreeNode
+{
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int val)
+    {
+        data=val;
+        left=nullptr;
+        right=nullptr;
+    }
+};
+// Helper function to calculate the height of binary tree
+int maxHeight(TreeNode* root)
+{
+    // Base case if root is null height is 0
+    if(root==NULL) return 0;
+    return 1+max(maxHeight(root->left),maxHeight(root->right));
+}
+// Function to check if tree is balanced
+bool isBalenced(TreeNode* root)
+{
+    // Base case: an empty tree is balanced
+    if(root==nullptr) return true;
+    // Height of left and right subtrees
+    int left=maxHeight(root->left);
+    int right=maxHeight(root->right);
+    // Check if current node is balanced
+    if(abs(left-right)>1) return false;
+    // Recursively check if left and right subtrees are balanced
+    return isBalenced(root->left) && isBalenced(root->right);
+}
+int main()
+{
+    TreeNode* root = new TreeNode(1);
+    root->left = new TreeNode(2);
+    root->right = new TreeNode(3);
+    root->left->left = new TreeNode(4);
+    root->left->right = new TreeNode(5);
+    root->left->right->right = new TreeNode(6);
+    root->left->right->right->right = new TreeNode(7);
+    bool ans=isBalenced(root);
+    if(ans) cout<<"true";
+    else cout<<"false";
+}
+
+Method 2: Otimized
+#include<bits/stdc++.h>
+using namespace std;
+struct TreeNode
+{
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int val)
+    {
+        data=val;
+        left=nullptr;
+        right=nullptr;
+    }
+};
+int checkHeight(TreeNode* root)
+{
+    // Base case
+    if(root==NULL) return 0;
+    // Check left subtree
+    int left=checkHeight(root->left);
+    if(left==-1) return -1;
+    // Check right subtree
+    int right=checkHeight(root->right);
+    if(right==-1) return -1;
+    // If current node is unbalenced
+    if(abs(left-right)>1) return -1;
+    // Returns height if balanced
+    return 1+max(left,right);
+}
+int main()
+{
+    TreeNode* root = new TreeNode(1);
+    root->left = new TreeNode(2);
+    root->right = new TreeNode(3);
+    root->left->left = new TreeNode(4);
+    root->left->right = new TreeNode(5);
+    root->left->right->right = new TreeNode(6);
+    root->left->right->right->right = new TreeNode(7);
+
+    if(checkHeight(root)!=-1) cout << "true";
+    else cout << "false";
+}
+
+Output:
+false
+
+I use a helper function checkHeight that returns the height of a subtree if it is balanced, otherwise it returns -1.
+I recursively compute the left and right subtree heights.
+If either subtree is unbalanced or the height difference is more than one, I return -1.
+Otherwise, I return the height of the current node.
+This way, height calculation and balance checking are done in one traversal, giving O(n) time complexity
