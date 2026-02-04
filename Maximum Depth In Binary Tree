@@ -1,0 +1,104 @@
+C++ Code:
+Method 1:Recursive approach
+#include<bits/stdc++.h>
+using namespace std;
+struct TreeNode
+{
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int val)
+    {
+        data=val;
+        left=nullptr;
+        right=nullptr;
+    }
+};
+int recursiveDepthOfBT(TreeNode* root)
+{
+    if(root==NULL)
+    {
+        return 0;
+    }
+    int left=recursiveDepthOfBT(root->left);
+    int right=recursiveDepthOfBT(root->right);
+    return 1+max(left,right);
+}
+int main()
+{
+    TreeNode* root=new TreeNode(1);
+    root->left=new TreeNode(2);
+    root->right=new TreeNode(3);
+    root->right->left=new TreeNode(4);
+    root->right->right=new TreeNode(6);
+    root->right->left->left=new TreeNode(5);
+    cout<<recursiveDepthOfBT(root);
+    return 0;
+}
+
+Method 2: Iterative approach using BFS(level order traversal)
+#include<bits/stdc++.h>
+using namespace std;
+struct TreeNode
+{
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int val)
+    {
+        data=val;
+        left=nullptr;
+        right=nullptr;
+    }
+};
+int maxDepth(TreeNode* root)
+{
+    if(root==NULL) return 0;
+    queue<TreeNode*>q;
+    q.push(root);
+    int level=0;
+    while(!q.empty())
+    {
+        int size=q.size();
+        for(int i=0;i<size;i++)
+        {
+            TreeNode* node=q.front();
+            q.pop();
+            if(node->left!=NULL) q.push(node->left);
+            if(node->right!=NULL) q.push(node->right);
+        }
+        level++;
+    }
+    return level;
+}
+int main()
+{
+    TreeNode* root=new TreeNode(1);
+    root->left=new TreeNode(2);
+    root->right=new TreeNode(3);
+    root->right->left=new TreeNode(4);
+    root->right->right=new TreeNode(6);
+    root->right->left->left=new TreeNode(5);
+    cout<<maxDepth(root);
+    return 0;
+}
+
+Output:
+4
+
+Another names of this question:
+Level-based wording :
+Number of levels in a binary tree
+Find height using level order traversal
+Height of tree using BFS
+
+Path-based wording:
+Longest path from root to leaf
+Length of longest root-to-leaf path
+
+Interview / Platform style names:
+Find the height of a tree iteratively
+Compute depth of binary tree
+Binary tree height using queue
+Find maximum depth without recursion
+
