@@ -1,0 +1,90 @@
+C++ Code:
+Method 1:Brute Force
+#include<bits/stdc++.h>
+using namespace std;
+struct TreeNode
+{
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int val)
+    {
+        data=val;
+        left=nullptr;
+        right=nullptr;
+    }
+};
+// Helper function to find maximum height of tree using recursion
+int height(TreeNode* root)
+{
+    if(root==NULL) return 0;
+    return 1+max(height(root->left),height(root->right));
+}
+// Recursive function to find diameter of tree
+int diameterOfTree(TreeNode* root)
+{
+    if(root==NULL) return 0;
+    // To fing left_height of tree using helper function
+    int lefth=height(root->left);
+    // To find right_height of tree using helper function
+    int righth=height(root->right);
+    // To find current diameter of tree
+    int current_diameter=lefth+righth;
+    // To find left_diameter and right_diameter recursively
+    int leftd=diameterOfTree(root->left);
+    int rightd=diameterOfTree(root->right);
+    // Return maximum of three values
+    return max(current_diameter,max(leftd,rightd));
+}
+int main()
+{
+    TreeNode* root=new TreeNode(1);
+    root->left=new TreeNode(2);
+    root->right=new TreeNode(3);
+    root->left->left=new TreeNode(4);
+    root->left->right=new TreeNode(5);
+    cout<<diameterOfTree(root);
+    return 0;
+}
+
+// In the recursive diameter function, for every node we again calculate the height of its subtree. Since height calculation itself takes O(n) time and this is done for n nodes, the overall time complexity becomes O(nsq)
+
+Method 2:Optimized
+#include<bits/stdc++.h>
+using namespace std;
+struct TreeNode
+{
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int val)
+    {
+        data=val;
+        left=nullptr;
+        right=nullptr;
+    }
+};
+int diameter=0;
+int height(TreeNode* root)
+{
+    if(root==NULL) return 0;
+    int lefth=height(root->left);
+    int righth=height(root->right);
+    diameter=max(diameter,lefth+righth);
+    return 1+max(lefth,righth);
+}
+int main()
+{
+    TreeNode* root=new TreeNode(1);
+    root->left=new TreeNode(2);
+    root->right=new TreeNode(3);
+    root->left->left=new TreeNode(4);
+    root->left->right=new TreeNode(5);
+    height(root);
+    cout<<diameter;
+    return 0;
+}
+
+// I calculate height once per node and update diameter during the same recursion, so height is not recomputed repeatedly.
+
+Output: 3
