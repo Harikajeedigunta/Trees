@@ -1,6 +1,8 @@
 C++ Code:
 Methode 1: Using recursive approach
-#include<bits/stdc++.h>
+#include<iostream>
+#include<vector>
+#include<queue>
 using namespace std;
 struct TreeNode
 {
@@ -14,49 +16,56 @@ struct TreeNode
         right=nullptr;
     }
 };
-// Function to perform inorder traversal of tree and to store values in array
-void recursiveInorder(TreeNode* root,vector<int> &arr)
+void recursiveInorderTraversal(TreeNode* root,vector<int>& arr)
 {
-    // Base case
-    if(root==nullptr)
-    {
-        return;
-    }
-    // Recursively traverse left subtree 
-    recursiveInorder(root->left,arr);
-    // Push current tree node value into vector
+    if(root==NULL) return;
+    recursiveInorderTraversal(root->left,arr);
     arr.push_back(root->data);
-    // Recursively traverse right subtree 
-    recursiveInorder(root->right,arr);
-}
-// Function to initiate inorder traversal and to return resulting vector
-vector<int>inorder(TreeNode* root)
-{
-    // Create empty vector to store inorder tree traversal values
-    vector<int>arr;
-    // Call inorder traversal function
-    recursiveInorder(root,arr);
-    // Return resulting vector
-    return arr;
+    recursiveInorderTraversal(root->right,arr);
 }
 int main()
 {
-    TreeNode* root=new TreeNode(1);
-    root->left=new TreeNode(2);
-    root->right=new TreeNode(3);
-    root->left->left=new TreeNode(4);
-    root->left->right=new TreeNode(5);
-    vector<int>result=inorder(root);
-    for(auto val:result)
+    int val;
+    cin>>val;
+    if(val==-1)
     {
-        cout<<val<<" ";
+        return 0;
     }
-    cout<<endl;
+    TreeNode* root=new TreeNode(val);
+    queue<TreeNode*>q;
+    q.push(root);
+    while(!q.empty())
+    {
+        TreeNode* curr=q.front();
+        q.pop();
+        int leftval,rightval;
+        cin>>leftval;
+        if(leftval!=-1)
+        {
+            curr->left=new TreeNode(leftval);
+            q.push(curr->left);
+        }
+        cin>>rightval;
+        if(rightval!=-1)
+        {
+            curr->right=new TreeNode(rightval);
+            q.push(curr->right);
+        }
+    }
+    vector<int>inorder;
+    recursiveInorderTraversal(root,inorder);
+    for(auto x:inorder)
+    {
+        cout<<x<<" ";
+    }
     return 0;
 }
 
 Method 2: Using iterative approach using stack
-#include<bits/stdc++.h>
+#include<iostream>
+#include<vector>
+#include<stack>
+#include<queue>
 using namespace std;
 struct TreeNode
 {
@@ -70,45 +79,70 @@ struct TreeNode
         right=nullptr;
     }
 };
-// Function to perform inorder traversal of binary tree iteratively
-vector<int> inorder(TreeNode* root)
+vector<int> iterativeInorderTraversal(TreeNode* root,vector<int>& arr)
 {
+    TreeNode* curr=root;
     stack<TreeNode*>st;
-    TreeNode* node=root;
-    vector<int>inorder;
     while(true)
     {
-        if(node!=NULL)
+        if(curr!=NULL)
         {
-            st.push(node);
-            node=node->left;
+            st.push(curr);
+            curr=curr->left;
         }
         else
         {
             if(st.empty()) break;
-            node=st.top();
+            curr=st.top();
             st.pop();
-            inorder.push_back(node->data);
-            node=node->right;
+            arr.push_back(curr->data);
+            curr=curr->right;
         }
     }
-    return inorder;
+    return arr;
 }
 int main()
 {
-    TreeNode* root=new TreeNode(1);
-    root->left=new TreeNode(2);
-    root->right=new TreeNode(3);
-    root->left->left=new TreeNode(4);
-    root->left->right=new TreeNode(5);
-    vector<int>result=inorder(root);
-    for(int val:result)
+    int val;
+    cin>>val;
+    if(val==-1) return 0;
+    TreeNode* root=new TreeNode(val);
+    queue<TreeNode*>q;
+    q.push(root);
+    while(!q.empty())
     {
-        cout<<val<<" ";
+        TreeNode* curr=q.front();
+        q.pop();
+        int leftval,rightval;
+        cin>>leftval;
+        if(leftval!=-1)
+        {
+            curr->left=new TreeNode(leftval);
+            q.push(curr->left);
+        }
+        cin>>rightval;
+        if(rightval!=-1)
+        {
+            curr->right=new TreeNode(rightval);
+            q.push(curr->right);
+        }
     }
-    cout<<endl;
+    vector<int>inorder;
+    inorder=iterativeInorderTraversal(root,inorder);
+    for(auto x:inorder)
+    {
+        cout<<x<<" ";
+    }
     return 0;
 }
 
-output:
+Input:
+1
+2 3
+4 5
+-1 -1
+-1 -1
+-1 -1
+
+Output:
 4 2 5 1 3 
