@@ -1,6 +1,8 @@
 C++ Code:
 Method 1: Using recursive approach
-#include<bits/stdc++.h>
+#include<iostream>
+#include<vector>
+#include<queue>
 using namespace std;
 struct TreeNode
 {
@@ -14,43 +16,52 @@ struct TreeNode
         right=nullptr;
     }
 };
-void recursivePostorder(TreeNode* root,vector<int> &arr)
+void recursivePostorderTraversal(TreeNode* root,vector<int>& arr)
 {
-    // Base case
     if(root==NULL) return;
-    recursivePostorder(root->left,arr);
-    recursivePostorder(root->right,arr);
+    recursivePostorderTraversal(root->left,arr);
+    recursivePostorderTraversal(root->right,arr);
     arr.push_back(root->data);
 }
-vector<int>postorder(TreeNode* root)
-{
-    vector<int>arr;
-    recursivePostorder(root,arr);
-    return arr;
-}
 int main()
 {
-    TreeNode* root=new TreeNode(1);
-    root->left=new TreeNode(2);
-    root->right=new TreeNode(3);
-    root->left->left=new TreeNode(4);
-    root->left->right=new TreeNode(5);
-    root->left->right->left=new TreeNode(8);
-    root->right->left=new TreeNode(6);
-    root->right->right=new TreeNode(7);
-    root->right->right->left=new TreeNode(9);
-    root->right->right->right=new TreeNode(10);
-    vector<int>result=postorder(root);
-    for(int val:result)
+    int val;
+    cin>>val;
+    if(val==-1) return 0;
+    TreeNode* root=new TreeNode(val);
+    queue<TreeNode*>q;
+    q.push(root);
+    while(!q.empty())
     {
-        cout<<val<<" ";
+        TreeNode* curr=q.front();
+        q.pop();
+        int leftval,rightval;
+        cin>>leftval;
+        if(leftval!=-1)
+        {
+            curr->left=new TreeNode(leftval);
+            q.push(curr->left);
+        }
+        cin>>rightval;
+        if(rightval!=-1)
+        {
+            curr->right=new TreeNode(rightval);
+            q.push(curr->right);
+        }
     }
-    cout<<endl;
+    vector<int>postorder;
+    recursivePostorderTraversal(root,postorder);
+    for(auto x:postorder)
+    {
+        cout<<x<<" ";
+    }
     return 0;
 }
-
-Method 2: Iterative approach using stack
-#include<bits/stdc++.h>
+Method 2: Iterative approach using two stacks
+#include<iostream>
+#include<vector>
+#include<stack>
+#include<queue>
 using namespace std;
 struct TreeNode
 {
@@ -64,43 +75,155 @@ struct TreeNode
         right=nullptr;
     }
 };
-vector<int>postorder(TreeNode* root)
+void iterativePostorderTraversal(TreeNode* root,vector<int>& arr)
 {
-    vector<int>postorder;
-    if(root==NULL) return postorder;
-    stack<TreeNode*>st;
-    st.push(root);
-    while(!st.empty())
+    if(root==NULL) return;
+    stack<TreeNode*>st1,st2;
+    st1.push(root);
+    while(!st1.empty())
     {
-        TreeNode* node=st.top();
-        st.pop();
-        postorder.push_back(node->data);
-        if(node->left) st.push(node->left);
-        if(node->right) st.push(node->right);
+        TreeNode* curr=st1.top();
+        st1.pop();
+        st2.push(curr);
+        if(curr->left)
+        {
+            st1.push(curr->left);
+        }
+        if(curr->right)
+        {
+            st1.push(curr->right);
+        }
     }
-    reverse(postorder.begin(),postorder.end());
-    return postorder;
+    while(!st2.empty())
+    {
+        arr.push_back(st2.top()->data);
+        st2.pop();
+    }
 }
 int main()
 {
-    TreeNode* root=new TreeNode(1);
-    root->left=new TreeNode(2);
-    root->right=new TreeNode(3);
-    root->left->left=new TreeNode(4);
-    root->left->right=new TreeNode(5);
-    root->left->right->left=new TreeNode(8);
-    root->right->left=new TreeNode(6);
-    root->right->right=new TreeNode(7);
-    root->right->right->left=new TreeNode(9);
-    root->right->right->right=new TreeNode(10);
-    vector<int>result=postorder(root);
-    for(int val:result)
+    int val;
+    cin>>val;
+    if(val==-1) return 0;
+    TreeNode* root=new TreeNode(val);
+    queue<TreeNode*>q;
+    q.push(root);
+    while(!q.empty())
     {
-        cout<<val<<" ";
+        TreeNode* curr=q.front();
+        q.pop();
+        int leftval,rightval;
+        cin>>leftval;
+        if(leftval!=-1)
+        {
+            curr->left=new TreeNode(leftval);
+            q.push(curr->left);
+        }
+        cin>>rightval;
+        if(rightval!=-1)
+        {
+            curr->right=new TreeNode(rightval);
+            q.push(curr->right);
+        }
     }
-    cout<<endl;
+    vector<int>postorder;
+    iterativePostorderTraversal(root,postorder);
+    for(auto x:postorder)
+    {
+        cout<<x<<" ";
+    }
     return 0;
 }
 
+Method 3:Iterative approach using one stack
+#include<iostream>
+#include<vector>
+#include<stack>
+#include<queue>
+using namespace std;
+struct TreeNode
+{
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int val)
+    {
+        data=val;
+        left=nullptr;
+        right=nullptr;
+    }
+};
+void iterativePostorderTraversal(TreeNode* root,vector<int>& arr)
+{
+    if(root==NULL) return;
+    TreeNode* curr=root;
+    TreeNode* lastvisited=nullptr;
+    stack<TreeNode*>st;
+    while(curr!=NULL || !st.empty())
+    {
+        if(curr!=NULL)
+        {
+            st.push(curr);
+            curr=curr->left;
+        }
+        else
+        {
+            TreeNode* peeknode=st.top();
+            if(peeknode->right!=NULL && lastvisited!=peeknode->right)
+            {
+                curr=peeknode->right;
+            }
+            else
+            {
+                arr.push_back(peeknode->data);
+                lastvisited=peeknode;
+                st.pop();
+            }
+        }
+    }
+}
+int main()
+{
+    int val;
+    cin>>val;
+    if(val==-1) return 0;
+    TreeNode* root=new TreeNode(val);
+    queue<TreeNode*>q;
+    q.push(root);
+    while(!q.empty())
+    {
+        TreeNode* curr=q.front();
+        q.pop();
+        int leftval,rightval;
+        cin>>leftval;
+        if(leftval!=-1)
+        {
+            curr->left=new TreeNode(leftval);
+            q.push(curr->left);
+        }
+        cin>>rightval;
+        if(rightval!=-1)
+        {
+            curr->right=new TreeNode(rightval);
+            q.push(curr->right);
+        }
+    }
+    vector<int>postorder;
+    iterativePostorderTraversal(root,postorder);
+    for(auto x:postorder)
+    {
+        cout<<x<<" ";
+    }
+    return 0;
+}
+
+Input:
+1
+2 3
+4 5
+-1 -1
+-1 -1
+-1 -1
+
 Output:
-4 8 5 2 6 9 10 7 3 1 
+4 5 2 3 1 
